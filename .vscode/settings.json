@@ -1,0 +1,5 @@
+{
+  "deno.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "redking00.vscode-nbts"
+}

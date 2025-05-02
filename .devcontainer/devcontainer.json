@@ -1,0 +1,22 @@
+{
+  "name": "Deno with dependencies",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/deno:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "deno.enable": true,
+        "deno.lint": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "redking00.vscode-nbts"
+      },
+      "extensions": [
+        "ms-toolsai.jupyter",
+        "redking00.vscode-nbts"
+      ]
+    }
+  },
+  "postCreateCommand": "npm install"
+}
