@@ -64,7 +64,36 @@ await chain.invoke({ question: 'Quais os horários de funcionamento?' })
 // > Metade das bolas são de tênis, e metade das bolas de tênis são amarelas.
 // > Quantas bolas de tênis amarelas o malabarista está usando?
 //#nbts@code
-// TODO: sua solução aqui
+const puzzlePrompt = ChatPromptTemplate.fromMessages([
+    ["system", "Você é um assistente virtual especialista em resolver problemas de lógica. Responda a pergunta do usuário da melhor maneira possível. Vamos pensar passo a passo."],
+    ["user", "{puzzle}"],
+]);
+
+
+const puzzleAnswerSchema = z.object({
+  steps: z
+    .array(
+      z.object({
+        reason: z.string().describe("Uma explicação sobre o passo"),
+        intermediate_value: z.number().describe("O valor intermediário resultante da execução deste passo")
+      })
+    )
+    .describe("Os passos para resolver o problema"),
+  final_answer: z.number().describe("A resposta final do puzzle"),
+});
+
+const puzzleModel = llm.withStructuredOutput(puzzleAnswerSchema, { strict: true })
+  
+  
+const puzzleChain = puzzlePrompt.pipe(puzzleModel)
+//#nbts@code
+const puzzleAnswer = await puzzleChain.invoke({
+    puzzle: `Um malabarista está fazendo malabares com 16 bolinhas.
+Metade das bolas são de tênis, e metade das bolas de tênis são amarelas.
+Quantas bolas de tênis amarelas o malabarista está usando?`
+})
+
+await Deno.jupyter.display(puzzleAnswer)
 //#nbts@mark
 // ### Classificação
 // 
@@ -79,7 +108,30 @@ await chain.invoke({ question: 'Quais os horários de funcionamento?' })
 // 3. Associar a menção a um ou mais setores envolvidos na crítica/elogio (`financeiro`, `suporte` ou `desenvolvimento`).
 // 4. Definir um _score_ de urgência para priorização na fila de atendimento para responder o cliente, de `0` (menos urgente) a `5` (mais urgente).
 //#nbts@code
-// TODO: classificar menções
+const mentionPrompt = ChatPromptTemplate.fromMessages([
+    ["system", `Você é um assistente virtual especialista em analisar menções à empresa TeamMove no Twitter (X).
+
+O aplicativo TeamMove é uma plataforma CRM desenvolvida para indústrias metalmecânica e química.`],
+    ["user", "{mention}"],
+]);
+
+const mentionClassification = z.object({
+  sentiment: z.enum(['positiva', 'neutra', 'negativa']).describe('O sentimento da menção'),
+  product: z.string().nullable().describe('O produto ao qual a menção se refere'),
+  area: z.array(z.enum(['financeiro', 'desenvolvimento'])).describe('As áreas da empresa relacionadas ao comentário. Use `desenvolvimento` quando se refere a qualidade do produto, `financeiro` quando se refere a problemas com o pagamento.'),
+  priority: z.number().describe('Um score de prioridade para atendimento, de 0 (pouca urgência, elogios ou comentários que não exigem atendimento imediato) a 5 (alta urgência, problemas que precisam ser resolvidos imediatamente)')
+});
+
+const mentionModel = llm.withStructuredOutput(mentionClassification, { strict: true })
+  
+  
+const mentionChain = mentionPrompt.pipe(mentionModel)
+//#nbts@code
+const mentionAnswer = await mentionChain.invoke({
+    mention: `amei o app`
+})
+
+await Deno.jupyter.display(mentionAnswer)
 //#nbts@mark
 // ## 4. Conclusão
 // 

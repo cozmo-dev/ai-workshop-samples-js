@@ -78,7 +78,23 @@ Deno.jupyter.md`${joke.content}`
 // 
 // Escreva um prompt que classifica o sentimento de um tweet em `positivo`, `neutro` ou `negativo`. Prepare a aplicação para receber os tweets dinamicamente usando um modelo de prompt.
 //#nbts@code
-// TODO: classificar tweets
+const classificationPrompt = ChatPromptTemplate.fromMessages([
+    ["system", `Você é um assistente virtual responsável por classificar o sentimento de tweets.
+
+<classification>
+positivo
+neutro
+negativo
+</classification>`],
+    ["user", "{tweet}"],
+]);
+
+const classificationChain = classificationPrompt.pipe(model)
+//#nbts@code
+// const classification = await model.invoke(`Classifique o sentimento do tweet: ${tweet}`)
+const classification = await classificationChain.invoke({ tweet: 'Eu achei o roteiro do filme muito bom' })
+
+Deno.jupyter.md`${classification.content}`
 //#nbts@mark
 // ## 4. Tradução
 // 
@@ -92,7 +108,24 @@ Deno.jupyter.md`${joke.content}`
 // - `target`: idioma de destino para o qual o texto deve ser traduzido.
 // - `text`: o texto a ser traduzido.
 //#nbts@code
-// TODO: traduzir textos
+const translationPrompt = ChatPromptTemplate.fromMessages([
+    ["system", "Você é um assistente virtual responsável por traduzir textos de `{source}` para `{target}`."],
+    ["user", "{text}"],
+]);
+
+const translationChain = translationPrompt.pipe(model)
+//#nbts@code
+const translationDefaults = {
+    source: 'idioma de origem'
+}
+
+const translation = await translationChain.invoke({
+    ...translationDefaults,
+    target: 'hindi',
+    text: 'Eu estou aprendendo sobre IA generativa!'
+})
+
+Deno.jupyter.md`${translation.content}`
 //#nbts@mark
 // ## 5. Conclusão
 // 

@@ -12,6 +12,7 @@
     "@langchain/core": "^0.3.50",
     "@langchain/openai": "^0.5.8",
     "@langchain/textsplitters": "^0.1.0",
+    "pokeapi-types": "0.0.2",
     "langchain": "^0.3.24",
     "zod": "^3.24.3"
   }

@@ -86,7 +86,9 @@ const llm = new ChatOpenAI({
 // 
 // Para gerar um texto, utilize o método `invoke` do client criado no passo anterior.
 //#nbts@code
-await llm.invoke("escreva um haiku sobre inteligência artificial");
+const haiku = await llm.invoke("escreva um haiku sobre inteligência artificial");
+
+haiku
 //#nbts@mark
 // ### Parâmetros
 // 
